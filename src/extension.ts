@@ -58,6 +58,17 @@ async function openScope(target?: any): Promise<void> {
 
 function findNodeType(treeNode: k8s.ClusterExplorerV1.ClusterExplorerResourceNode): string {
 
+// cluster: http://localhost:8080/#!/state/{%22pinnedMetricType%22:%22CPU%22,%22showingNetworks%22:true,%22topologyId%22:%22pods%22,%22topologyOptions%22:{%22containers%22:{%22system%22:[%22all%22]},%22pods%22:{%22namespace%22:[%22default%22],%22pseudo%22:[%22show%22]}}}
+
+// cluster all namespaces: http://localhost:8080/#!/state/{%22pinnedMetricType%22:%22CPU%22,%22showingNetworks%22:true,%22topologyId%22:%22pods%22,%22topologyOptions%22:{%22containers%22:{%22system%22:[%22all%22]},%22pods%22:{%22pseudo%22:[%22show%22]}}}
+
+// services: http://localhost:8080/#!/state/{%22pinnedMetricType%22:%22CPU%22,%22showingNetworks%22:true,%22topologyId%22:%22services%22,%22topologyOptions%22:{%22containers%22:{%22system%22:[%22all%22]},%22pods%22:{%22namespace%22:[%22default%22],%22pseudo%22:[%22show%22]}}}
+
+// pods: http://localhost:8080/#!/state/{%22pinnedMetricType%22:%22CPU%22,%22showingNetworks%22:true,%22topologyId%22:%22pods%22,%22topologyOptions%22:{%22containers%22:{%22system%22:[%22all%22]},%22pods%22:{%22namespace%22:[%22default%22],%22pseudo%22:[%22show%22]}}}
+
+
+
+
     var returnedJsonString = JSON.parse('{"pinnedMetricType":"CPU","showingNetworks":true,"topologyId":"pods","topologyOptions":{"containers":{"system":["all"]},"pods":{"namespace":["default"],"pseudo":["show"]}}}');
     if (treeNode.resourceKind.manifestKind === 'Node') {
         const nodeName = treeNode.name;
