@@ -32,27 +32,57 @@ async function openScope(target?: any): Promise<void> {
         return;
     }
 
+
+    // set up portforward. Need pod name of endpoint: get endpoints --selector app=weave-scope -o jsonpath='{.items[].subsets[0].addresses[0].targetRef.name}'
+
+    const podName = await kubectl.api.invokeCommand(`get endpoints --selector app=weave-scope -o json`);
+
+    if (!podName || podName.code !== 0) {
+        vscode.window.showErrorMessage(`Can't get resource usage: ${podName ? podName.stderr : 'unable to run kubectl'}`);
+        return;
+    }
+    else {
+        var scopePodInfo = JSON.parse(podName.stdout);
+        var pod = scopePodInfo.items[0].subsets[0].addresses[0].targetRef.name;
+        var namespace = scopePodInfo.items[0].subsets[0].addresses[0].targetRef.namespace;
+        var targetPort = scopePodInfo.items[0].subsets[0].ports[0].port;
+        vscode.window.showInformationMessage(`kubectl port-forward ${pod} -n ${namespace} 8080:${targetPort}`);
+
+        kubectl.api.invokeCommand(`port-forward ${pod} -n ${namespace} 8080:${targetPort}`);
+
+        // TODO: start here. We are now port forwarding to a fixed 8080 port. 
+    }
+    //kubectl.api.invokeInNewTerminal(`port-forward ${podName} ${portPairStrings.join(' ')} -n ${usedNamespace}`, PORT_FORWARD_TERMINAL);
+
+
     // decide what type of treenode we have clicked: cluster, namespace, node, service, pod, container
+
     
 
     // What's the clicked View item?
     const treeNode = explorer.api.resolveCommandTarget(target);
 
     // assuming it's a resource, find the type and absorb the json string from it.
-    if (treeNode && treeNode.nodeType === 'resource') {
-        const scopeCommand = findNodeType(treeNode);
-        if (treeNode) {
-            vscode.window.showInformationMessage(scopeCommand);
-            return;
-        }
+    if (treeNode){
+    switch (treeNode.nodeType) {
+        case 'context':
+          vscode.window.showInformationMessage('https://localhost:8080');
+          break;
+        case 'resource':
+        const scopeCommand = findNodeType(treeNode);           vscode.window.showInformationMessage('https://localhost:8080/!#/state/' +  scopeCommand);
+            break;
+        default:
+          console.log('It was neither a resource nor a context node.');
+          break;
+      }
     }
+      
 
 	// function that creates the json for one of the above contexts
 
-	// port-forwarding pod and then open `http://localhost:8080/#!/state/` + urlencoded json string returned from above.
-
-
-
+    // port-forwarding pod and then open `http://localhost:8080/#!/state/` + urlencoded json string returned from above.
+    
+ 
 }
 
 
@@ -69,7 +99,7 @@ function findNodeType(treeNode: k8s.ClusterExplorerV1.ClusterExplorerResourceNod
 
 
 
-    var returnedJsonString = JSON.parse('{"pinnedMetricType":"CPU","showingNetworks":true,"topologyId":"pods","topologyOptions":{"containers":{"system":["all"]},"pods":{"namespace":["default"],"pseudo":["show"]}}}');
+    var returnedJsonString = JSON.parse('{"topologyId":"pods"}');
     if (treeNode.resourceKind.manifestKind === 'Node') {
         const nodeName = treeNode.name;
         return returnedJsonString;
@@ -78,7 +108,8 @@ function findNodeType(treeNode: k8s.ClusterExplorerV1.ClusterExplorerResourceNod
         return returnedJsonString;
     } else if (treeNode.resourceKind.manifestKind === 'Service'){
         const serviceName = treeNode.name;
-        return returnedJsonString;
+        returnedJsonString.topologyId = 'services';
+        return JSON.stringify(returnedJsonString);
     } else if (treeNode.resourceKind.manifestKind === 'Namespace'){
         const namespaceName = treeNode.name;
         returnedJsonString.topologyOptions.pods.namespace = namespaceName;
@@ -90,7 +121,7 @@ function findNodeType(treeNode: k8s.ClusterExplorerV1.ClusterExplorerResourceNod
     }
 }
 
-
+// http://localhost:8080/#!/state/{%22pinnedSearches%22:[%22example-go-example-go%22],%22topologyId%22:%22services%22}
 
 
 // this method is called when your extension is deactivated
