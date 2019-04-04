@@ -5,6 +5,9 @@ import * as vscode from 'vscode';
 // Imports the Microsoft Kubernetes extension API
 import * as k8s from 'vscode-kubernetes-tools-api';
 
+declare var isScopeForwarded: boolean;
+declare var isScopeInstalled: boolean;
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -13,10 +16,19 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
     const disposable = vscode.commands.registerCommand('scope.open', openScope);
+
+    isScopeForwarded = false;
     context.subscriptions.push(disposable);
 }
 
+async function installScope(target?: any): Promise<void> {
+
+    return;
+}
+
 async function openScope(target?: any): Promise<void> {
+
+    isScopeForwarded = false;
 
     // Check for explorer API
     const explorer = await k8s.extension.clusterExplorer.v1;
@@ -25,16 +37,13 @@ async function openScope(target?: any): Promise<void> {
         return;
 	}
 	
-	//TODO: Decide whether I ever need to use kubectl
     const kubectl = await k8s.extension.kubectl.v1;
     if (!kubectl.available) {
         vscode.window.showErrorMessage(`kubectl not available: ${kubectl.reason}`);
         return;
     }
 
-
-    // set up portforward. Need pod name of endpoint: get endpoints --selector app=weave-scope -o jsonpath='{.items[].subsets[0].addresses[0].targetRef.name}'
-
+    // get weave scope front-end pod. 
     const podName = await kubectl.api.invokeCommand(`get endpoints --selector app=weave-scope -o json`);
 
     if (!podName || podName.code !== 0) {
@@ -42,13 +51,31 @@ async function openScope(target?: any): Promise<void> {
         return;
     }
     else {
+
         var scopePodInfo = JSON.parse(podName.stdout);
         var pod = scopePodInfo.items[0].subsets[0].addresses[0].targetRef.name;
         var namespace = scopePodInfo.items[0].subsets[0].addresses[0].targetRef.namespace;
         var targetPort = scopePodInfo.items[0].subsets[0].ports[0].port;
         vscode.window.showInformationMessage(`kubectl port-forward ${pod} -n ${namespace} 8080:${targetPort}`);
 
-        kubectl.api.invokeCommand(`port-forward ${pod} -n ${namespace} 8080:${targetPort}`);
+    
+        //const forwardResult = await kubectl.api.invokeCommand(`port-forward ${pod} -n ${namespace} 8080:${targetPort}`);
+        if (isScopeForwarded){
+
+
+        }
+        else {
+
+        }
+
+        const forwardResult = kubectl.api.portForward(pod, namespace, 8080, targetPort);
+        if (forwardResult) {
+            isScopeForwarded = true;
+        }
+        else {
+            
+
+        }
 
         // TODO: start here. We are now port forwarding to a fixed 8080 port. 
     }
@@ -69,7 +96,8 @@ async function openScope(target?: any): Promise<void> {
           vscode.window.showInformationMessage('https://localhost:8080');
           break;
         case 'resource':
-        const scopeCommand = findNodeType(treeNode);           vscode.window.showInformationMessage('https://localhost:8080/!#/state/' +  scopeCommand);
+        const scopeCommand = findNodeType(treeNode);           
+        vscode.window.showInformationMessage('https://localhost:8080/!#/state/' +  scopeCommand);
             break;
         default:
           console.log('It was neither a resource nor a context node.');

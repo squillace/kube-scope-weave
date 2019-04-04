@@ -13,27 +13,27 @@
 		"onCommand:scope.open"
 	],
 	"main": "./out/extension.js",
-    "contributes": {
-        "commands": [
-            {
-                "command": "scope.open",
-                "title": "Open Weave Scope",
-                "category": "Scope"
-            }
-        ],
-        "menus": {
-            "view/item/context": [
+	"contributes": {
+		"commands": [
+			{
+				"command": "scope.open",
+				"title": "Open Weave Scope",
+				"category": "Scope"
+			}
+		],
+		"menus": {
+			"view/item/context": [
 				{
-                    "command": "scope.open",
-                    "when": "view == extension.vsKubernetesExplorer && viewItem =~ /^vsKubernetes\\.\\w*cluster$/i"
+					"command": "scope.open",
+					"when": "view == extension.vsKubernetesExplorer && viewItem =~ /^vsKubernetes\\.\\w*cluster$/i"
 				},
 				{
-                    "command": "scope.open",
-                    "when": "viewItem =~ /vsKubernetes\\.resource\\.(node|pod|namespace|service)/i"
-                }
-            ]
-        }
-    },
+					"command": "scope.open",
+					"when": "viewItem =~ /vsKubernetes\\.resource\\.(node|pod|namespace|service)/i"
+				}
+			]
+		}
+	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
@@ -49,6 +49,6 @@
 		"@types/mocha": "^2.2.42"
 	},
 	"dependencies": {
-		"vscode-kubernetes-tools-api": "0.0.2"
+		"vscode-kubernetes-tools-api": "0.0.4"
 	}
 }
