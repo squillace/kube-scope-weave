@@ -16,12 +16,11 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
     const openDisposable = vscode.commands.registerCommand('scope.open', openScope);
-    //const installDisposable = vscode.commands.registerCommand('scope.install', installScope);
+    const installDisposable = vscode.commands.registerCommand('scope.install', installScope);
 
     context.subscriptions.push(openDisposable);
-    //context.subscriptions.push(installDisposable);
+    context.subscriptions.push(installDisposable);
 
-    isScopeForwarded = false;
 }
 
 async function installScope(target?: any): Promise<void> {
@@ -29,18 +28,38 @@ async function installScope(target?: any): Promise<void> {
     // TODO: Decide whether installing Scope shouldn't just be a command and not a right-click visible all the time.
     vscode.window.showInformationMessage('You have reached the installation function.');
 
-        // Check for explorer API
-        const explorer = await k8s.extension.clusterExplorer.v1;
-        if (!explorer.available) {
-            vscode.window.showErrorMessage(`Command not available: ${explorer.reason}`);
+    // Check for explorer API
+    const explorer = await k8s.extension.clusterExplorer.v1;
+    if (!explorer.available) {
+        vscode.window.showErrorMessage(`Command not available: ${explorer.reason}`);
+        return;
+    }
+    
+    const kubectl = await k8s.extension.kubectl.v1;
+    if (!kubectl.available) {
+        vscode.window.showErrorMessage(`kubectl not available: ${kubectl.reason}`);
+        return;
+    }
+
+    const helm = await k8s.extension.helm.v1;
+    if (!helm.available) {
+        vscode.window.showErrorMessage(`Command not available: ${helm.reason}`);
+        return;
+    }
+    
+    if (isScopeInstalled){
+        vscode.window.showInformationMessage("Weave Scope is already installed.");
+        return;
+    }
+    else {
+        const scopeInstallDisposable = await helm.api.invokeCommand(`install stable/weave-scope --version 0.11.0`);
+        if (!scopeInstallDisposable || scopeInstallDisposable.code !== 0) {
+            vscode.window.showErrorMessage(`Unable to install Weave Scope. Helm reports: ${scopeInstallDisposable ? scopeInstallDisposable.stderr : 'unable to run helm install'}`);
             return;
         }
-        
-        const kubectl = await k8s.extension.kubectl.v1;
-        if (!kubectl.available) {
-            vscode.window.showErrorMessage(`kubectl not available: ${kubectl.reason}`);
-            return;
-        }
+    }
+
+    
     return;
 }
 
@@ -114,11 +133,7 @@ async function openScope(target?: any): Promise<void> {
       }
     }
       
-
-	// function that creates the json for one of the above contexts
-
-    // port-forwarding pod and then open `http://localhost:8080/#!/state/` + urlencoded json string returned from above.
-    
+   
  
 }
 
