@@ -57,6 +57,9 @@ async function installScope(target?: any): Promise<void> {
             vscode.window.showErrorMessage(`Unable to install Weave Scope. Helm reports: ${scopeInstallDisposable ? scopeInstallDisposable.stderr : 'unable to run helm install'}`);
             return;
         }
+        else{
+            vscode.window.showInformationMessage("");
+        }
     }
 
     
@@ -101,10 +104,9 @@ async function openScope(target?: any): Promise<void> {
         var targetPort = scopePodInfo.items[0].subsets[0].ports[0].port;
         vscode.window.showInformationMessage(`kubectl port-forward ${pod} -n ${namespace} 8080:${targetPort}`);
 
-            const forwardResult = kubectl.api.portForward(pod, namespace, 8080, targetPort);
+        const forwardResult = kubectl.api.portForward(pod, namespace, 8080, targetPort);
         if (forwardResult) {
             isScopeForwarded = true;
-            vscode.window.showInformationMessage('Weave scope should open up here.');
         }
         else {
             vscode.window.showErrorMessage(`The Kubectl port-forward to scope failed.`); 
@@ -120,12 +122,14 @@ async function openScope(target?: any): Promise<void> {
     // assuming it's a resource, find the type and absorb the json string from it.
     if (treeNode){
     switch (treeNode.nodeType) {
-        case 'context':
-          vscode.window.showInformationMessage('https://localhost:8080');
-          break;
+        case 'context':    
+            vscode.window.showInformationMessage('http://localhost:8080');
+            vscode.env.openExternal(vscode.Uri.parse('http://localhost:8080'));
+            break;
         case 'resource':
-        const scopeCommand = findNodeType(treeNode);           
-        vscode.window.showInformationMessage('https://localhost:8080/!#/state/' +  scopeCommand);
+        const scopeCommand = 'http://localhost:8080/!#/state/' + findNodeType(treeNode);           
+        vscode.window.showInformationMessage(scopeCommand);
+        vscode.env.openExternal(vscode.Uri.parse(scopeCommand));
             break;
         default:
           console.log('It was neither a resource nor a context node.');
@@ -151,7 +155,7 @@ function findNodeType(treeNode: k8s.ClusterExplorerV1.ClusterExplorerResourceNod
 
 
 
-    var returnedJsonString = JSON.parse('{"topologyId":"pods"}');
+    var returnedJsonString = JSON.parse('{"topologyId":"pods"}'); // TODO: Wrong
     if (treeNode.resourceKind.manifestKind === 'Node') {
         const nodeName = treeNode.name;
         return returnedJsonString;
