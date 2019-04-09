@@ -6,7 +6,7 @@ import * as vscode from 'vscode';
 import * as k8s from 'vscode-kubernetes-tools-api';
 
 var isScopeForwarded: boolean = false;
-var isScopeInstalled: boolean = true;
+var isScopeInstalled: boolean = false;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -17,16 +17,83 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
     const openDisposable = vscode.commands.registerCommand('scope.open', openScope);
     const installDisposable = vscode.commands.registerCommand('scope.install', installScope);
-
+    const startTaskDisposable = vscode.commands.registerCommand('scope.startTask', startTask);
     context.subscriptions.push(openDisposable);
     context.subscriptions.push(installDisposable);
+    context.subscriptions.push(startTaskDisposable);
+
 
 }
 
+async function startTask(target?: any): Promise<void> {
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: "I am long running!",
+			cancellable: true
+		}, (progress, token) => {
+			token.onCancellationRequested(() => {
+				vscode.window.showInformationMessage("User canceled the long running operation.");
+			});
+
+			progress.report({ increment: 0 });
+
+			setTimeout(() => {
+				progress.report({ increment: 10, message: "I am long running! - still going..." });
+			}, 1000);
+
+			setTimeout(() => {
+				progress.report({ increment: 40, message: "I am long running! - still going even more..." });
+			}, 2000);
+
+			setTimeout(() => {
+				progress.report({ increment: 50, message: "I am long running! - almost there..." });
+			}, 3000);
+
+			var p = new Promise(resolve => {
+				setTimeout(() => {
+					resolve();
+				}, 5000);
+			});
+
+			return p;
+        });
+    }
+
+
+
 async function installScope(target?: any): Promise<void> {
 
-    // TODO: Decide whether installing Scope shouldn't just be a command and not a right-click visible all the time.
-    vscode.window.showInformationMessage('You have reached the installation function.');
+    // TODO: Break this up into working progress on installation, move on to portforward prior to opening.
+    
+    vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: "Installing Weave Scope...",
+        cancellable: true
+    }, (progress, token) => {
+        token.onCancellationRequested(() => {
+            vscode.window.showInformationMessage("Canceled Weave Scope Installation. You may need to run helm delete --purge manually.");
+        });
+
+        progress.report({ increment: 0 });
+
+
+
+        setTimeout(() => {
+            progress.report({ increment: 40, message: "I am long running! - still going even more..." });
+        }, 2000);
+
+        setTimeout(() => {
+            progress.report({ increment: 50, message: "I am long running! - almost there..." });
+        }, 3000);
+
+        var p = new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, 5000);
+        });
+
+        return p;
+    });
 
     // Check for explorer API
     const explorer = await k8s.extension.clusterExplorer.v1;
@@ -58,7 +125,7 @@ async function installScope(target?: any): Promise<void> {
             return;
         }
         else{
-            vscode.window.showInformationMessage("");
+            vscode.window.showInformationMessage(scopeInstallDisposable.stdout);
         }
     }
 
@@ -67,8 +134,6 @@ async function installScope(target?: any): Promise<void> {
 }
 
 async function openScope(target?: any): Promise<void> {
-
-
 
     // Check for explorer API
     const explorer = await k8s.extension.clusterExplorer.v1;

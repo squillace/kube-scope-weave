@@ -11,7 +11,8 @@
 	],
 	"activationEvents": [
 		"onCommand:scope.open",
-		"onCommand:scope.install"
+		"onCommand:scope.install",
+		"onCommand:scope.startTask"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -25,16 +26,17 @@
 				"command": "scope.install",
 				"title": "Install Weave Scope",
 				"category": "Scope"
+			},
+			{
+				"command": "scope.startTask",
+				"title": "Show Progress",
+				"category": "Scope"
 			}
 		],
 		"menus": {
 			"view/item/context": [
 				{
 					"command": "scope.open",
-					"when": "view == extension.vsKubernetesExplorer && viewItem =~ /^vsKubernetes\\.\\w*cluster$/i"
-				},
-				{
-					"command": "scope.install",
 					"when": "view == extension.vsKubernetesExplorer && viewItem =~ /^vsKubernetes\\.\\w*cluster$/i"
 				},
 				{
