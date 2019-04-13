@@ -11,8 +11,7 @@
 	],
 	"activationEvents": [
 		"onCommand:scope.open",
-		"onCommand:scope.install",
-		"onCommand:scope.startTask"
+		"onCommand:scope.install"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
