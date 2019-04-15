@@ -1,20 +1,22 @@
 # kube-scope-weave README
 
-The `kube-scope-weave` extension add [Weave Scope](https://www.weave.works/oss/scope/) functionality to the core VS Code Kubernetes extension experience. 
+The `kube-scope-weave` extension add [Weave Scope](https://www.weave.works/oss/scope/) functionality to the core VS Code Kubernetes extension experience.
 
 ## Features
 
 Scope is a tool for visualizing and interacting with your Kubernetes applications that works against any Kubernetes cluster. This extension, which depends upon the [VS Code Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) for core Kubernetes support, enables:
+
 - installing Weave Scope using the [Helm stable Weave Scope chart](https://hub.kubeapps.com/charts/stable/weave-scope).
 - opening Scope to the appropriate context at:
->- Cluster
->- Node
->- Namespace
->- Service
->- Pod
+  - Cluster
+  - Node
+  - Namespace
+  - Service
+  - Pod
 
 ## How to run
 
+<<<<<<< HEAD
 1. First of all, get all the prerequisites:
     - [Helm](https://helm.sh/docs/using_helm/#installing-the-helm-client) + [Tiller](https://helm.sh/docs/using_helm/#installing-tiller)
     - [VS Code Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) - its API is used to create new behavior inside the core Kubernetes experience without having to rewrite any Kubernetes client
@@ -24,6 +26,22 @@ Scope is a tool for visualizing and interacting with your Kubernetes application
 5. Now open the Kubernetes extension - the _Open Weave Scope_ action should appear in the dropdown when right-clicking on the cluster or some of the individual K8s resources
 
 _See the [this doc](https://github.com/squillace/kube-scope-weave/blob/master/vsc-extension-quickstart.md) for more information on how to run and test VS Code extensions._
+=======
+## Requirements
+
+This extension uses the [VS Code Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)'s API to create new behavior inside the core Kubernetes experience without having to rewrite any Kubernetes client code. Therefore, you must install that extension in order to use this one.
+
+## Extension Settings
+
+Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+
+For example:
+
+This extension contributes the following settings:
+
+- `myExtension.enable`: enable/disable this extension
+- `myExtension.thing`: set to `blah` to do something
+>>>>>>> d894c4d... remove boilerplate text
 
 ## Known Issues
 
