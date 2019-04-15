@@ -31,11 +31,6 @@
 				"command": "scope.install",
 				"title": "Install Weave Scope",
 				"category": "Scope"
-			},
-			{
-				"command": "scope.startTask",
-				"title": "Show Progress",
-				"category": "Scope"
 			}
 		],
 		"menus": {

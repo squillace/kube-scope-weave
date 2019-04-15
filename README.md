@@ -16,7 +16,6 @@ Scope is a tool for visualizing and interacting with your Kubernetes application
 
 ## How to run
 
-<<<<<<< HEAD
 1. First of all, get all the prerequisites:
     - [Helm](https://helm.sh/docs/using_helm/#installing-the-helm-client) + [Tiller](https://helm.sh/docs/using_helm/#installing-tiller)
     - [VS Code Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) - its API is used to create new behavior inside the core Kubernetes experience without having to rewrite any Kubernetes client
@@ -26,22 +25,6 @@ Scope is a tool for visualizing and interacting with your Kubernetes application
 5. Now open the Kubernetes extension - the _Open Weave Scope_ action should appear in the dropdown when right-clicking on the cluster or some of the individual K8s resources
 
 _See the [this doc](https://github.com/squillace/kube-scope-weave/blob/master/vsc-extension-quickstart.md) for more information on how to run and test VS Code extensions._
-=======
-## Requirements
-
-This extension uses the [VS Code Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)'s API to create new behavior inside the core Kubernetes experience without having to rewrite any Kubernetes client code. Therefore, you must install that extension in order to use this one.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-- `myExtension.enable`: enable/disable this extension
-- `myExtension.thing`: set to `blah` to do something
->>>>>>> d894c4d... remove boilerplate text
 
 ## Known Issues
 
@@ -53,9 +36,11 @@ This extension contributes the following settings:
 Users appreciate release notes as you update your extension.
 
 ### 0.0.2
-First published version. 
-- In the command palette, you can locate Scope: Install Weave Scope if you want to manually install Weave Scope yourself. 
-- Right clicking Weave scope will check and install Scope if it's not already installed. 
+
+First published version.
+
+- In the command palette, you can locate Scope: Install Weave Scope if you want to manually install Weave Scope yourself.
+- Right clicking Weave scope will check and install Scope if it's not already installed.
 
 ### 0.0.1
 
