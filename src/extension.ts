@@ -58,8 +58,22 @@ async function installScope(target?: any): Promise<void> {
         return;
     }
     else {
-        const matchNoEndpoint = podName.stdout.match("No resources found.");
-        if (!matchNoEndpoint){
+
+        /*
+        "{
+            "apiVersion": "v1",
+            "items": [],
+            "kind": "List",
+            "metadata": {
+                "resourceVersion": "",
+                "selfLink": ""
+            }
+        }
+        "
+        */
+        const frontendPodCount =  JSON.parse(podName.stdout).items.length;
+        //const matchNoEndpoint = podName.stdout.match("No resources found.");
+        if (frontendPodCount > 0){
             vscode.window.showInformationMessage('Weave scope is already installed.');
             return;
         }    
@@ -141,6 +155,12 @@ async function openScope(target?: any): Promise<void> {
     // get weave scope front-end pod. 
     const podName = await kubectl.api.invokeCommand(`get endpoints --selector app=weave-scope -o json`);
 
+
+    /*
+        Conditions:
+            podName doesn't exist
+            podName has error code
+    */
     if (!podName || podName.code !== 0) {
         vscode.window.showErrorMessage(`Can't get resource usage: ${podName ? podName.stderr : 'unable to run kubectl'}`);
         return;
@@ -152,10 +172,19 @@ async function openScope(target?: any): Promise<void> {
         var namespace = scopePodInfo.items[0].subsets[0].addresses[0].targetRef.namespace;
         var targetPort = scopePodInfo.items[0].subsets[0].ports[0].port;
 
-        const forwardResult = kubectl.api.portForward(pod, namespace, 8080, targetPort);
+        /* 
+            Conditions:
+                forewardResult existence gets global forwarding state.
+                Check for global forwarding state prior to trying to re-open. If forwarded, then simply open.
+                
+            TODO: Currently there is no reopen implementation for failed open. 
+        */
+        const forwardResult = await kubectl.api.portForward(pod, namespace, 8080, targetPort);
         if (forwardResult) {
             isScopeForwarded = true;
-
+        }
+        
+        if (isScopeForwarded === true) {
             // What's the clicked View item?
             const treeNode = explorer.api.resolveCommandTarget(target);
 
@@ -174,6 +203,7 @@ async function openScope(target?: any): Promise<void> {
                     break;
                 }
             }
+
         }
         else {
             vscode.window.showErrorMessage(`The Kubectl port-forward to scope failed.`); 
