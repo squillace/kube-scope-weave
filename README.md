@@ -19,9 +19,17 @@ For example if there is an image subfolder under your extension project workspac
 
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
-## Requirements
+## How to run
 
-This extension uses the [VS Code Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)'s API to create new behavior inside the core Kubernetes experience without having to rewrite any Kubernetes client code. Therefore, you must install that extension in order to use this one.
+1. First of all, get all the prerequisites:
+    - [Helm](https://helm.sh/docs/using_helm/#installing-the-helm-client) + [Tiller](https://helm.sh/docs/using_helm/#installing-tiller)
+    - [VS Code Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) - its API is used to create new behavior inside the core Kubernetes experience without having to rewrite any Kubernetes client
+2. Clone this repo and run `npm install` to have all the dependencies installed
+3. Open the project in VS Code and hit F5 to run a new instance with Scope plugin support
+4. Run `Scope: Install Weave Scope` command (bring the command panel up with `Ctrl+Shift+P`)
+5. Now open the Kubernetes extension - the _Open Weave Scope_ action should appear in the dropdown when right-clicking on the cluster or some of the individual K8s resources
+
+_See the [this doc](https://github.com/squillace/kube-scope-weave/blob/master/vsc-extension-quickstart.md) for more information on how to run and test VS Code extensions._
 
 ## Extension Settings
 
@@ -37,7 +45,7 @@ This extension contributes the following settings:
 ## Known Issues
 
 - Detection of existing Scope installations is done by looking for the `frontend` endpoint in the current namespace. If it cannot be found, a new installation is created.
-- Currently, the default namespace is used. This will be a selection in the future. 
+- Currently, the default namespace is used in the Kubernetes extension. This will be a selection in the future.
 
 ## Release Notes
 
