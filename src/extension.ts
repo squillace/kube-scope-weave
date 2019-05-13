@@ -23,8 +23,8 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 
-
 // Installs Weave Scope IF it isn't already installed.
+// Not visible in the left pane view, as once installed I don't want to install it.
 async function installScope(target?: any): Promise<void> {
 
     // TODO: Break this up into working progress on installation, move on to portforward prior to opening.
@@ -59,18 +59,6 @@ async function installScope(target?: any): Promise<void> {
     }
     else {
 
-        /*
-        "{
-            "apiVersion": "v1",
-            "items": [],
-            "kind": "List",
-            "metadata": {
-                "resourceVersion": "",
-                "selfLink": ""
-            }
-        }
-        "
-        */
         const frontendPodCount =  JSON.parse(podName.stdout).items.length;
         //const matchNoEndpoint = podName.stdout.match("No resources found.");
         if (frontendPodCount > 0){
@@ -90,8 +78,6 @@ async function installScope(target?: any): Promise<void> {
         });
 
         progress.report({ increment: 0 });
-
-
 
         setTimeout(() => {
             progress.report({ increment: 40, message: "Waiting for installation to be ready..." });
@@ -117,7 +103,7 @@ async function installScope(target?: any): Promise<void> {
         return;
     }
     else {
-        const scopeInstallDisposable = await helm.api.invokeCommand(`install stable/weave-scope --version 0.11.0`);
+        const scopeInstallDisposable = await helm.api.invokeCommand(`install --name weave-scope stable/weave-scope --version 0.11.0`);
         if (!scopeInstallDisposable || scopeInstallDisposable.code !== 0) {
             vscode.window.showErrorMessage(`Unable to install Weave Scope. Helm reports: ${scopeInstallDisposable ? scopeInstallDisposable.stderr : 'unable to run helm install'}`);
             return;
@@ -218,7 +204,7 @@ async function openScope(target?: any): Promise<void> {
 
 function findNodeType(treeNode: k8s.ClusterExplorerV1.ClusterExplorerResourceNode): string {
 
-    var json = {};
+    var json = JSON.parse("{}");
     if (treeNode.resourceKind.manifestKind === 'Node') {
         // Show all hosts in the graph view
         json.topologyId = 'hosts';
