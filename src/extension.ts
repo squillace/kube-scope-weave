@@ -191,16 +191,17 @@ async function openScope(target?: any): Promise<void> {
             // assuming it's a resource, find the type and absorb the json string from it.
             if (treeNode){
                 switch (treeNode.nodeType) {
-                    case 'context':    
-                        vscode.env.openExternal(vscode.Uri.parse('http://localhost:8080'));
+                    case 'context':
+                        // Set state to empty object explicitly to not fallback to the last cached state.
+                        vscode.env.openExternal(vscode.Uri.parse('http://localhost:8080/#!/state/{}'));
                         break;
                     case 'resource':
-                    const scopeCommand = 'http://localhost:8080/#!/state/' + findNodeType(treeNode);           
-                    vscode.env.openExternal(vscode.Uri.parse(scopeCommand));
+                        const scopeCommand = 'http://localhost:8080/#!/state/' + findNodeType(treeNode);
+                        vscode.env.openExternal(vscode.Uri.parse(scopeCommand));
                         break;
                     default:
-                    console.log('It was neither a resource nor a context node.');
-                    break;
+                        console.log('It was neither a resource nor a context node.');
+                        break;
                 }
             }
 
@@ -217,26 +218,29 @@ async function openScope(target?: any): Promise<void> {
 
 function findNodeType(treeNode: k8s.ClusterExplorerV1.ClusterExplorerResourceNode): string {
 
-    var returnedJsonString = JSON.parse('{"pinnedMetricType":"CPU","showingNetworks":true,"topologyId":"services","topologyOptions":{"containers":{"system":["all"]},"pods":{"namespace":["default"],"pseudo":["show"]}}}'); 
+    var json = {};
     if (treeNode.resourceKind.manifestKind === 'Node') {
-        const nodeName = treeNode.name;
-        returnedJsonString.topologyId = 'hosts';
-        return JSON.stringify(returnedJsonString);
-        return returnedJsonString;
+        // Show all hosts in the graph view
+        json.topologyId = 'hosts';
+        return JSON.stringify(json);
     } else if (treeNode.resourceKind.manifestKind === 'Pod') {
+        // Show all pods in the graph view, with active one highlighted
         const podName = treeNode.name;
-        returnedJsonString.topologyId = 'pods';
-        return JSON.stringify(returnedJsonString);
-    } else if (treeNode.resourceKind.manifestKind === 'Service'){
+        json.topologyId = 'pods';
+        json.searchQuery = podName;
+        return JSON.stringify(json);
+    } else if (treeNode.resourceKind.manifestKind === 'Service') {
+        // Show all services in the graph view, with active one highlighted
         const serviceName = treeNode.name;
-        returnedJsonString.topologyId = 'services';
-        return JSON.stringify(returnedJsonString);
-    } else if (treeNode.resourceKind.manifestKind === 'Namespace'){
+        json.topologyId = 'services';
+        json.searchQuery = serviceName;
+        return JSON.stringify(json);
+    } else if (treeNode.resourceKind.manifestKind === 'Namespace') {
+        // Show the default topology in graph view, filtered by active namespace
         const namespaceName = treeNode.name;
-        returnedJsonString.topologyOptions.pods.namespace = namespaceName;
-        return JSON.stringify(returnedJsonString);
-    }    
-    else {
+        json.topologyOptions = { pods: { namespace: [namespaceName] } };
+        return JSON.stringify(json);
+    } else {
         return 'http://localhost:8080/';
     }
 }
