@@ -13,12 +13,6 @@ Scope is a tool for visualizing and interacting with your Kubernetes application
 >- Service
 >- Pod
 
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
 ## How to run
 
 1. First of all, get all the prerequisites:
@@ -31,17 +25,6 @@ For example if there is an image subfolder under your extension project workspac
 
 _See the [this doc](https://github.com/squillace/kube-scope-weave/blob/master/vsc-extension-quickstart.md) for more information on how to run and test VS Code extensions._
 
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
 ## Known Issues
 
 - Detection of existing Scope installations is done by looking for the `frontend` endpoint in the current namespace. If it cannot be found, a new installation is created.
@@ -50,6 +33,11 @@ This extension contributes the following settings:
 ## Release Notes
 
 Users appreciate release notes as you update your extension.
+
+### 0.0.2
+First published version. 
+- In the command palette, you can locate Scope: Install Weave Scope if you want to manually install Weave Scope yourself. 
+- Right clicking Weave scope will check and install Scope if it's not already installed. 
 
 ### 0.0.1
 
