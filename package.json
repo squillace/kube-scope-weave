@@ -4,6 +4,7 @@
 	"description": "An extension depending upon the Microsoft Kubernetes extension that installs and makes Weave Scope easy to discover and use from VS Code.",
 	"version": "0.0.2",
 	"publisher": "rasquill",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/squillace/kube-scope-weave"
