@@ -51,7 +51,7 @@ async function installScope(target?: any): Promise<void> {
     
     // check for installation: 
         // get weave scope front-end pod. 
-    const podName = await kubectl.api.invokeCommand(`get endpoints --selector app=weave-scope -o json`);
+    const podName = await kubectl.api.invokeCommand(`get endpoints --selector app=weave-scope -o json --all-namespaces`);
 
     if (!podName || podName.code !== 0) {
         vscode.window.showErrorMessage(`Can't get resource usage: ${podName ? podName.stderr : 'unable to run kubectl'}`);
@@ -139,7 +139,7 @@ async function openScope(target?: any): Promise<void> {
     */
    
     // get weave scope front-end pod. 
-    const podName = await kubectl.api.invokeCommand(`get endpoints --selector app=weave-scope -o json`);
+    const podName = await kubectl.api.invokeCommand(`get endpoints --selector app=weave-scope -o json --all-namespaces`);
 
 
     /*
