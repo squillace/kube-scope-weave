@@ -103,7 +103,7 @@ async function installScope(target?: any): Promise<void> {
         return;
     }
     else {
-        const scopeInstallDisposable = await helm.api.invokeCommand(`install --name weave-scope stable/weave-scope --version 0.11.0`);
+        const scopeInstallDisposable = await helm.api.invokeCommand(`install --name weave-scope stable/weave-scope`);
         if (!scopeInstallDisposable || scopeInstallDisposable.code !== 0) {
             vscode.window.showErrorMessage(`Unable to install Weave Scope. Helm reports: ${scopeInstallDisposable ? scopeInstallDisposable.stderr : 'unable to run helm install'}`);
             return;
