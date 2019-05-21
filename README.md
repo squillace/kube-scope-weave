@@ -1,17 +1,18 @@
 # kube-scope-weave README
 
-The `kube-scope-weave` extension add [Weave Scope](https://www.weave.works/oss/scope/) functionality to the core VS Code Kubernetes extension experience. 
+The `kube-scope-weave` extension add [Weave Scope](https://www.weave.works/oss/scope/) functionality to the core VS Code Kubernetes extension experience.
 
 ## Features
 
 Scope is a tool for visualizing and interacting with your Kubernetes applications that works against any Kubernetes cluster. This extension, which depends upon the [VS Code Kubernetes extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools) for core Kubernetes support, enables:
+
 - installing Weave Scope using the [Helm stable Weave Scope chart](https://hub.kubeapps.com/charts/stable/weave-scope).
 - opening Scope to the appropriate context at:
->- Cluster
->- Node
->- Namespace
->- Service
->- Pod
+  - Cluster
+  - Node
+  - Namespace
+  - Service
+  - Pod
 
 ## How to run
 
@@ -35,9 +36,11 @@ _See the [this doc](https://github.com/squillace/kube-scope-weave/blob/master/vs
 Users appreciate release notes as you update your extension.
 
 ### 0.0.2
-First published version. 
-- In the command palette, you can locate Scope: Install Weave Scope if you want to manually install Weave Scope yourself. 
-- Right clicking Weave scope will check and install Scope if it's not already installed. 
+
+First published version.
+
+- In the command palette, you can locate Scope: Install Weave Scope if you want to manually install Weave Scope yourself.
+- Right clicking Weave scope will check and install Scope if it's not already installed.
 
 ### 0.0.1
 
